@@ -1,0 +1,226 @@
+---
+import Layout from "../layouts/Layout.astro";
+// import Card from '../components/Card.astro';
+import fetch from "node-fetch";
+
+import { formatDate } from "../js/shared.js";
+
+// 固定ページ一覧取得
+const res = await fetch(`${import.meta.env.PUBLIC_APP_BASE_URL}/baser-core/contents.json`);
+const json = await res.json();
+// console.log(json);
+const contents = json.contents;
+
+// ブログ NEWS 取得
+const resNews = await fetch(
+  `${import.meta.env.PUBLIC_APP_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=1`
+);
+const jsonNews = await resNews.json();
+// console.log(jsonNews);
+const blogPostsNews = jsonNews.blogPosts;
+
+// ブログ NEWSカテゴリー 取得
+const resCategory = await fetch(
+  `${import.meta.env.PUBLIC_APP_BASE_URL}/bc-blog/blog_categories.json?blog_content_id=1`
+);
+const jsonCategory = await resCategory.json();
+console.log(jsonCategory);
+// idをキーとしたオブジェクトに変換
+let blogCategories: { [key: string]: any } = [];
+jsonCategory.blogCategories.forEach((item: any) => {
+  blogCategories[item.id] = { ...item, children: [] };
+});
+
+// ブログ リリースノート 取得
+const resRelease = await fetch(
+  `${import.meta.env.PUBLIC_APP_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=2`);
+const jsonRelease = await resRelease.json();
+// console.log(jsonRelease);
+const blogPostsRelease = jsonRelease.blogPosts;
+
+
+---
+
+<Layout title="Welcome to Astro.">
+  <h1>Astro + baserCMS5 🚀</h1>
+  <!-- <ul>
+			{contents && contents.map((content: any) => {
+				if (content.type === 'Page') {
+					return (
+					<li>
+						<a href={`${content.url}`}>
+							<h3 set:html={content.title} />
+							<p set:html={content.name} />
+						</a>
+					</li>
+					);
+				} else {
+					return null;
+				}
+			})}
+		</ul> -->
+
+  <div class="bs-info">
+    <h2 class="bs-info__head">NEWS</h2>
+
+    <ul class="bs-top-post">
+      {
+        blogPostsNews &&
+          blogPostsNews.map((post: any) => (
+            <li class="bs-top-post__item post-1">
+              <!-- <div class="debug">{JSON.stringify(post)}</div> -->
+              <a href={`/news/${post.id}`} class="bs-top-post__item-eye-catch">
+                <img
+                  src={`/bc_front/${post._eyecatch}`}
+                  alt="" width="150" class="img-eye-catch"
+                />
+              </a>
+
+             <!-- ToDo: 年月日付の出力形式を変更する -->
+              <span class="bs-top-post__item-date">
+              {
+                post.posted ? formatDate(post.posted) : formatDate(post.created)
+              }
+                </span>
+              <a
+                href={`/news/archives/category/${blogCategories[post.blog_category_id].name}`}
+                class="bs-top-post__item-category"
+              >
+                {blogCategories[post.blog_category_id].title}
+              </a>
+              <a href={`/news/${post.id}`} class="bs-top-post__item-title">
+                {post.title}
+              </a>
+             <!-- ToDo: HTMLタグを除去して表示する --> 
+              <div class="bs-top-post__item-detail" set:html={post.content} />
+            </li>
+          ))
+      }
+    </ul>
+    <div class="bs-top-post-to-list"><a href="/news/">VIEW ALL</a></div>
+  </div>
+
+  {
+    blogPostsRelease &&
+      blogPostsRelease.map((content: any) => (
+        <a href={`/post${content.id}`}>
+          {content.id}
+          {content.url}
+          <h2 set:html={content.title} />
+          <p set:html={content.name} />
+        </a>
+      ))
+  }
+
+  <h2>baserCMSサンプルテーマ</h2>
+
+  <p>
+    これは、baserCMSのサンプルテーマです。<br />
+     トップページのこの部分は、固定ページで作られており、NEWS と
+    baserCMS最新情報の部分は、テンプレートで作成されています。<br />
+     変更する場合は、/pages/index.astro を変更してください。
+  </p>
+
+  <h3>グローバルメニューについて</h3>
+
+  <p>
+    グローバルメニューは、管理画面の [コンテンツ管理]
+    のツリー構造と連動しています。ツリー構造上においてドラック＆ドロップで並び替えることができ、グローバルメニューに表示したくない場合は、対象コンテンツの編集画面より、[オプション]
+    を開き、[公開ページのメニューより除外する] を選択し保存してください。
+  </p>
+
+  <p>
+    また、グローバルメニュー部分を変更する場合は、/Elements/header.php
+    を編集してください。
+  </p>
+
+  <h3>サイドバーについて</h3>
+
+  <p>
+    サイドバーはウィジェットエリア機能を利用して作られています。管理画面の
+    [設定] &rarr; [ユーティリティ] &rarr; [ウィジェットエリア]
+    より、カスタマイズが可能です。ブログでは「ブログサイドバー」を利用していますが、それ以外のコンテンツでは、「標準サイドバー」を利用しています。
+  </p>
+
+  <p>
+    サイト基本設定は、各ブログの [設定]
+    より利用するウィジェットエリアを変更することができます。
+  </p>
+
+  <p>
+    また、サイドバー部分を変更する場合は、/Elements/widget_area.php
+    を編集してください。
+  </p>
+
+  <h3>初期データについて</h3>
+
+  <p>
+    このサンプルテーマは２つの初期データを提供しています。現在利用しているものは「default」でサンプルのデータが入っているものになります。
+  </p>
+
+  <p>
+    サンプルデータを入っていないものを利用したい場合は、テーマ管理より「empty」を選択し「初期データ読込」ボタンをクリックしてください。
+  </p>
+</Layout>
+
+<style>
+  main {
+    margin: auto;
+    padding: 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
+    color: #333;
+    font-size: 20px;
+    line-height: 1.6;
+  }
+  .astro-a {
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translatex(-50%);
+    width: 220px;
+    height: auto;
+    z-index: -1;
+  }
+  h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
+  .instructions {
+    margin-bottom: 2rem;
+    border: 1px solid rgba(var(--accent-light), 25%);
+    background: linear-gradient(
+      rgba(var(--accent-dark), 66%),
+      rgba(var(--accent-dark), 33%)
+    );
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+  .instructions code {
+    font-size: 0.8em;
+    font-weight: bold;
+    background: rgba(var(--accent-light), 12%);
+    color: rgb(var(--accent-light));
+    border-radius: 4px;
+    padding: 0.3em 0.4em;
+  }
+  .instructions strong {
+    color: rgb(var(--accent-light));
+  }
+  .link-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+    gap: 2rem;
+    padding: 0;
+  }
+</style>

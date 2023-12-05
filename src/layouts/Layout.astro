@@ -1,0 +1,271 @@
+---
+import GlobalNav from "../layouts/GlobalNav.astro";
+import { capitalize } from "../js/shared.js";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+
+// コンテンツ一覧取得
+const res = await fetch(`${import.meta.env.PUBLIC_APP_BASE_URL}/baser-core/contents.json`);
+const json = await res.json();
+// console.log(json);
+const contents = json.contents;
+
+let home = false;
+let pathname = Astro.url.pathname;
+if (pathname === "/" || pathname === "/index") {
+  home = true;
+}
+
+let { slug } = Astro.params;
+// console.log("slug:" + slug);
+// console.log(Astro.request.url);
+console.log(Astro.url.pathname);
+
+let bodyClass = "Default";
+// contentsの中からslugと一致するものを探す
+for (let i = 0; i < contents.length; i++) {
+  if (contents[i].url === pathname) {
+    // console.log(contents[i]);
+    // ブログの場合はbodyClassをBcBlogにする
+    if (contents[i].plugin == "BcBlog" || contents[i].name == "index") {
+      // 頭1文字目を大文字にする
+      bodyClass = capitalize(contents[i].name);
+      break;
+    }
+  }
+}
+// console.log("bodyClass:" + bodyClass);
+---
+
+<!doctype html>
+<html lang="jp">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,minimum-scale=1.0"
+    />
+    <title>{title}</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link href="/favicon.ico" type="image/x-icon" rel="icon" /><link
+      href="/favicon.ico"
+      type="image/x-icon"
+      rel="shortcut icon"
+    />
+
+    <link rel="stylesheet" href="/bc_front/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="/bc_front/css/jquery-ui/jquery-ui-1.11.4.css"
+    />
+    <link rel="stylesheet" href="/bc_front/css/colorbox/colorbox-1.6.1.css" />
+    <link rel="stylesheet" href="/bc_front/css/editor.css" />
+
+    <script is:inline src="/bc_front/js/vendor/jquery-1.11.3.min.js"></script>
+    <script is:inline src="/bc_front/js/vendor/jquery-ui-1.11.4.min.js"></script>
+    <script is:inline src="/bc_front/js/vendor/jquery.bxslider-4.12.min.js"></script>
+    <script is:inline src="/bc_front/js/vendor/jquery.colorbox-1.6.1.min.js"></script>
+    <script is:inline src="/bc_front/js/vendor/i18n/ui.datepicker-ja.js"></script>
+    <script is:inline src="/bc_front/js/vendor/jquery-accessibleMegaMenu.js"></script>
+    <script is:inline src="/bc_front/js/startup.bundle.js"></script>
+  </head>
+  <body id={bodyClass}>
+    <div class="bs-container">
+      <header class="bs-header">
+        <div class="bs-header__inner">
+          <a href="/" title="baserCMS"><img
+              src="/img/logo.png"
+              class="bs-header__logo"
+              alt="baserCMS" /></a>
+        </div>
+
+        <div class="bs-header__menu-button" id="BsMenuBtn">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <GlobalNav />
+      </header>
+      {
+        // トップページのみスライドショーを表示
+        home && (
+          <ul id="MainImage" class="bs-main-image">
+            <li>
+              <a href="/" title="コーポレートサイトにちょうどいい国産CMS">
+                <img
+                  src="/img/main_image_1.jpg"
+                  alt="コーポレートサイトにちょうどいい国産CMS"
+                  width="100%"
+                />
+              </a>
+            </li>
+            <li>
+              <a
+                href="/"
+                title="全て日本語の国産CMSだから、設置も更新も簡単、わかりやすい。"
+              >
+                <img
+                  src="/img/main_image_2.jpg"
+                  alt="全て日本語の国産CMSだから、設置も更新も簡単、わかりやすい。"
+                  width="100%"
+                />
+              </a>
+            </li>
+            <li>
+              <a href="/" title="標準的なWebサイトに必要な基本機能を全て装備">
+                <img
+                  src="/img/main_image_3.jpg"
+                  alt="標準的なWebサイトに必要な基本機能を全て装備"
+                  width="100%"
+                />
+              </a>
+            </li>
+            <li>
+              <a href="/" title="デザインも自由自在にカスタマイズ可能！">
+                <img
+                  src="/img/main_image_4.jpg"
+                  alt="デザインも自由自在にカスタマイズ可能！"
+                  width="100%"
+                />
+              </a>
+            </li>
+            <li>
+              <a href="/" title="質問・ご相談はユーザーズフォーラムへ">
+                <img
+                  src="/img/main_image_5.jpg"
+                  alt="質問・ご相談はユーザーズフォーラムへ"
+                  width="100%"
+                />
+              </a>
+            </li>
+          </ul>
+        )
+      }
+      <div class="bs-wrap">
+        <main class="bs-main-contents">
+          <!-- astro コンテンツ -->
+          <slot />
+        </main>
+
+        <section class="bs-sub-contents">
+          <!-- /Elements/widget_area.php -->
+
+          <div class="bs-widget-area bs-widget-area-1">
+            <div class="bs-widget bs-widget-search-box bs-widget-search-box-3">
+              <h2 class="bs-widget-head">サイト内検索</h2>
+              <div class="bs-widget-form">
+                <form
+                  method="get"
+                  accept-charset="utf-8"
+                  novalidate="novalidate"
+                  action="/bc-search-index/search_indexes/search"
+                >
+                  <label for="f">カテゴリ</label><br />
+                  <span class=""
+                    ><select name="f" id="f"
+                      ><option value="">指定しない</option><option value="6"
+                        >サービス</option
+                      ></select
+                    ></span
+                  >
+                  <br />
+                  <span class=""
+                    ><input
+                      type="text"
+                      name="q"
+                      placeholder="キーワード"
+                      id="q"
+                      aria-label="キーワード"
+                    /></span
+                  >
+                  <input type="hidden" name="s" id="s" value="1" />
+                  <input type="submit" class="bs-button-small" value="検索" />
+                </form>
+              </div>
+            </div>
+
+            <div class="bs-widget bs-widget-text bs-widget-text-4">
+              <h2 class="bs-widget-head">リンク</h2>
+              <ul>
+                <li>
+                  <a href="https://basercms.net" target="_blank"
+                    >baserCMSオフィシャル</a
+                  >
+                </li>
+              </ul><p>
+                <small
+                  >この部分は、管理画面の [設定] → [ユーティリティ] →
+                  [ウィジェットエリア] → [標準サイドバー] より編集できます。</small
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- /Elements/footer.php -->
+
+      <footer class="bs-footer">
+        <p class="bs-footer__copyright">
+          Copyright(C) 2008 - 2023 Theme Sample All rights Reserved.
+          <span class="bs-footer__banner">
+            <a
+              href="https://basercms.net/"
+              target="_blank"
+              class="bs-footer__banner-link"
+              ><img
+                src="/img/baser.power.gif"
+                alt="baserCMS : Based Website Development Project"
+              /></a
+            >&nbsp;
+            <a
+              href="https://cakephp.org/"
+              target="_blank"
+              class="bs-footer__banner-link"
+              ><img
+                src="/img/cake.power.gif"
+                alt="CakePHP(tm) : Rapid Development Framework"
+              /></a
+            >
+          </span>
+        </p>
+      </footer>
+    </div>
+  </body>
+
+  <style is:global>
+    :root {
+      --accent: 136, 58, 234;
+      --accent-light: 224, 204, 250;
+      --accent-dark: 49, 10, 101;
+      --accent-gradient: linear-gradient(
+        45deg,
+        rgb(var(--accent)),
+        rgb(var(--accent-light)) 30%,
+        white 60%
+      );
+    }
+    html {
+      font-family: system-ui, sans-serif;
+      background: #fff;
+      background-size: 224px;
+    }
+    code {
+      font-family:
+        Menlo,
+        Monaco,
+        Lucida Console,
+        Liberation Mono,
+        DejaVu Sans Mono,
+        Bitstream Vera Sans Mono,
+        Courier New,
+        monospace;
+    }
+  </style>
+</html>

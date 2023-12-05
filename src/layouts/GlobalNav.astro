@@ -1,0 +1,72 @@
+---
+// コンテンツ一覧取得
+const res = await fetch(
+  `${import.meta.env.PUBLIC_APP_BASE_URL}/baser-core/contents.json`,
+);
+const json = await res.json();
+// console.log(json);
+const contents = json.contents;
+
+
+// idをキーとしたオブジェクトに変換
+let menus: { [key: string]: any } = [];
+contents.forEach((item: any) => {
+//   menus[item.id] = { ...item, children: [] };
+    menus[item.id] = {
+        id: item.id,
+        name: item.name,
+        entity_id: item.entity_id,
+        url: item.url,
+        parent_id: item.parent_id,
+        level: item.level,
+        title: item.title,
+        blank_link: item.blank_link,
+        children: []
+    };
+});
+
+// 親子関係を構築
+contents.forEach((item: any) => {
+  if (item.parent_id !== null && item.parent_id !== 1) {
+    menus[item.parent_id].children.push(item);
+  }
+});
+
+// console.log("menus ----");
+// console.log(menus);
+// console.log("menus //--");
+
+const { slug } = Astro.params;
+// console.log('slug:' + slug);
+
+---
+
+<nav class="bs-header__nav use-mega-menu" id="BsMenuContent">
+  <ul class="ul-level-1 bs-global-menu">
+    {
+      menus.map((item: any) => (
+        // item.level=1のitemのみを出力する
+        item.level === 1 && (
+            <li class={`bs-global-menu-item li-level-1 nav-item ${item.url === "/"+slug ? 'current' : ''}`}>
+            <a href={item.url} class="bs-global-menu-item--link">{item.title}</a>
+                {
+                    item.children && item.children.length > 0 && (
+                    <div class="bs-global-menu-sub sub-nav" role="group" aria-expanded="false" aria-hidden="true" aria-labelledby={item.id}>
+                    <ul class="menu ul-level-2">
+                        {
+                        item.children.map((item: any) => (
+                            <li class={`menu-content li-level-2 ${item.url === "/"+slug ? 'current' : ''}`}>
+                            <a href={item.url}>{item.title}</a>
+                            </li>
+                        ))
+                        }
+                    </ul>
+                    </div>
+                    )
+                }
+            </li>
+        )
+      ))
+    }
+  </ul>
+</nav>

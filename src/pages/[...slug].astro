@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+import fetch from 'node-fetch';
+// import { Astro } from "astro";
+import { myPages } from '../js/shared.js';
+
+
+export async function getStaticPaths() {
+  const paths:object = myPages.map(({ url, id, title, type, plugin, name }) => {
+    return {
+      params: { slug : url },
+      props: { id, title, type, plugin, name  },
+    };
+  });
+  // console.log(paths);
+  return paths;
+}
+
+
+const { url, id, title,  type, plugin, name } = Astro.props;
+// console.log('Astro.params:');
+// console.log(Astro.params);
+
+// URLからpageIdパラメータを取得
+const { slug } = Astro.params;
+// console.log('slug:' + slug);
+
+// myPages の中から url が一致するページのidを取得
+console.log( myPages.find( page => page.url === "/" + slug).entity_id );
+const pageId = myPages.find( page => page.url === "/" + slug).entity_id;
+const contentId = myPages.find( page => page.url === "/" + slug).id;
+
+// baserCMS5のAPIからページ情報を取得
+const res = await fetch(
+  `${import.meta.env.PUBLIC_APP_BASE_URL}/baser-core/pages/${pageId}.json`
+);
+const data = await res.json();
+const page = data.page;
+// console.log(page);
+
+// コンテンツの次、前のページを取得
+const prev = await fetch(
+  `${import.meta.env.PUBLIC_APP_BASE_URL}/baser-core/contents/get_prev/${contentId}.json`
+);
+const prevData = await prev.json();
+const prevPage = prevData.content;
+console.log(prevData);
+
+const next = await fetch(
+  `${import.meta.env.PUBLIC_APP_BASE_URL}/baser-core/contents/get_next/${contentId}.json`
+);
+const nextData = await next.json();
+const nextPage = nextData.content;
+console.log(nextData);
+
+---
+
+<Layout title={page.content.title}>
+    <article>
+      <h1 set:html={page.content.title} />
+		  <img src={`${page.content.eyecatch}`} alt="" />
+		  <Fragment set:html={page.contents} />
+    </article>
+    
+    <div>
+      {
+        prevPage && (
+          <a href={prevPage.url}>＜{prevPage.title}</a>
+        )
+      }
+      {
+        nextPage && (
+          <a href={nextPage.url}>{nextPage.title}＞</a>
+        )
+      }
+    </div>
+</Layout>

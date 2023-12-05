@@ -1,0 +1,44 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import fetch from 'node-fetch';
+import { getStaticPaths } from 'astro/server';
+
+
+// console.log(import.meta.env);
+
+/**
+ * SSG（静的サイトジェネレータ）に対する処理です。
+ * APIからブログ投稿を取得し、各投稿のパラメータを生成します。
+ * サーバーサイドやリアルタイムプレビューでは不要な処理です。
+ * @returns {Array} 各ブログ投稿のパラメータを含むオブジェクトの配列。
+ */
+export async function getStaticPaths() {
+	const res = await fetch(`${import.meta.env.PUBLIC_APP_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=1`);
+	const posts = await res.json();
+	const paths = posts.blogPosts.map(
+		post => ({
+			params: { blogPostId: post.id.toString() },
+		})
+	);
+	// console.log(posts);
+	return paths;
+}
+
+
+// 以下はリアルタイムプレビューやサーバーサイドでの処理です。
+const { blogPostId } = Astro.params; // URLからパラメーター取得
+// const { title, content } = Astro.props;
+
+const resPost = await fetch(`${import.meta.env.PUBLIC_APP_BASE_URL}/bc-blog/blog_posts/${blogPostId}.json`).then(res => res.json());
+const post = resPost.blogPost; // JSONの中身を取得
+// console.log(post);
+
+---
+
+<Layout title={post.title}>
+    <article>
+        <h1 set:html={post.title} />
+		<img src={`${post._eyecatch}`} alt="" />
+		<Fragment set:html={post.detail} />
+    </article>
+</Layout>
