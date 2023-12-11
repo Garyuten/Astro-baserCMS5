@@ -3,9 +3,12 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
   publicDir: "./public",
-  outDir: "./dist",
-  base: "/",
-  // // site: "http//localhost",
+  // outDir: "./dist",
+  // base: "/",
+
+  site: "https://Garyuten.github.io/",
+  outDir: "./docs",
+  base: "/Astro-baserCMS5",
   // redirects: {
   //   '/index': '/',
   // },
