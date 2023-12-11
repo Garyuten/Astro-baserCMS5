@@ -6,24 +6,24 @@ import fetch from "node-fetch";
 import { formatDate } from "../js/shared.js";
 
 // 固定ページ一覧取得
-const res = await fetch(`${import.meta.env.PUBLIC_APP_BASE_URL}/baser-core/contents.json`);
-const json = await res.json();
+const res = await fetch(`${import.meta.env.API_BASE_URL}/baser-core/contents.json`);
+const json: Record<string, any> = await res.json() as Record<string, any>;
 // console.log(json);
 const contents = json.contents;
 
 // ブログ NEWS 取得
 const resNews = await fetch(
-  `${import.meta.env.PUBLIC_APP_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=1`
+  `${import.meta.env.API_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=1`
 );
-const jsonNews = await resNews.json();
+const jsonNews: Record<string, any> = await resNews.json() as Record<string, any>;
 // console.log(jsonNews);
 const blogPostsNews = jsonNews.blogPosts;
 
 // ブログ NEWSカテゴリー 取得
 const resCategory = await fetch(
-  `${import.meta.env.PUBLIC_APP_BASE_URL}/bc-blog/blog_categories.json?blog_content_id=1`
+  `${import.meta.env.API_BASE_URL}/bc-blog/blog_categories.json?blog_content_id=1`
 );
-const jsonCategory = await resCategory.json();
+const jsonCategory: Record<string, any> = await resCategory.json() as Record<string, any>;
 console.log(jsonCategory);
 // idをキーとしたオブジェクトに変換
 let blogCategories: { [key: string]: any } = [];
@@ -33,8 +33,8 @@ jsonCategory.blogCategories.forEach((item: any) => {
 
 // ブログ リリースノート 取得
 const resRelease = await fetch(
-  `${import.meta.env.PUBLIC_APP_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=2`);
-const jsonRelease = await resRelease.json();
+  `${import.meta.env.API_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=2`);
+const jsonRelease: Record<string, any> = await resRelease.json() as Record<string, any>;
 // console.log(jsonRelease);
 const blogPostsRelease = jsonRelease.blogPosts;
 

@@ -9,21 +9,21 @@ import fetch from 'node-fetch';
 // // console.log(json);
 // const contents = json.contents;
 
-// ブログ NEWS 取得
-const resNews = await fetch(`${import.meta.env.API_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=1`);
+// リリースノート 取得
+const resNews = await fetch(`${import.meta.env.API_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=2`);
 const jsonNews:any = await resNews.json();
 // console.log(jsonNews);
 const blogPostsNews = jsonNews.blogPosts;
 
 ---
 
-<Layout title="NEWS記事一覧">
-	<h2>新着記事一覧</h2>
+<Layout title="リリースノート一覧">
+	<h2>リリースノート一覧</h2>
 	<ul>
 	{
 	blogPostsNews && blogPostsNews.map((post:any) => (
 		<li>
-		<a href={`/news/${post.id}`}>
+		<a href={`/release/${post.id}`}>
 			{post.title}
 		</a>
 		</li>

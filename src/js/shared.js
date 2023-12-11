@@ -25,7 +25,7 @@ export const formatDate = function(dateStr) {
 
 // コンテンツ一覧を取得
 const res = await fetch(
-  `${import.meta.env.PUBLIC_APP_BASE_URL}/baser-core/contents.json`,
+  `${import.meta.env.API_BASE_URL}/baser-core/contents.json`,
 );
 const json = await res.json();
 const contents = json.contents;

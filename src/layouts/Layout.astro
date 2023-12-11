@@ -9,7 +9,7 @@ interface Props {
 const { title } = Astro.props;
 
 // コンテンツ一覧取得
-const res = await fetch(`${import.meta.env.PUBLIC_APP_BASE_URL}/baser-core/contents.json`);
+const res = await fetch(`${import.meta.env.API_BASE_URL}/baser-core/contents.json`);
 const json = await res.json();
 // console.log(json);
 const contents = json.contents;
