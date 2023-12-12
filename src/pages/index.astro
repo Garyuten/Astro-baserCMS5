@@ -45,22 +45,6 @@ const blogPostsRelease = jsonRelease.blogPosts;
 
 <Layout title="Welcome to Astro.">
   <h1>Astro + baserCMS5 🚀</h1>
-  <!-- <ul>
-			{contents && contents.map((content: any) => {
-				if (content.type === 'Page') {
-					return (
-					<li>
-						<a href={`${content.url}`}>
-							<h3 set:html={content.title} />
-							<p set:html={content.name} />
-						</a>
-					</li>
-					);
-				} else {
-					return null;
-				}
-			})}
-		</ul> -->
 
   <div class="bs-info">
     <h2 class="bs-info__head">NEWS</h2>
@@ -77,8 +61,6 @@ const blogPostsRelease = jsonRelease.blogPosts;
                   alt="" width="150" class="img-eye-catch"
                 />
               </a>
-
-             <!-- ToDo: 年月日付の出力形式を変更する -->
               <span class="bs-top-post__item-date">
               {
                 post.posted ? formatDate(post.posted) : formatDate(post.created)

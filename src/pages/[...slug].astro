@@ -13,6 +13,7 @@ const { url, id, title, type, plugin, name } = Astro.props;
 interface MyPage {
   url: string;
   id: string;
+  entity_id?: string;
   title: string;
   type: string;
   plugin: string;
@@ -23,16 +24,18 @@ export async function getStaticPaths() {
   const myPages: MyPage[] = await getMyPages();
   // console.log("myPages ------------------");
   console.log("myPages.length:", myPages.length);
-  const paths = myPages.map(({ url, id, title, type, plugin, name }) => {
-    if (url === "/") {
-      // Skip the loop
-      return null;
-    }
-    return {
-      params: { slug: url.substring(1) }, // Remove leading '/' for slug
-      props: { id, title, type, plugin, name },
-    };
-  }).filter(Boolean); // Exclude null values
+  const paths = myPages
+    .map(({ url, id, title, type, plugin, name }) => {
+      if (url === "/") {
+        // Skip the loop
+        return null;
+      }
+      return {
+        params: { slug: url.substring(1) }, // Remove leading '/' for slug
+        props: { url, id, title, type, plugin, name },
+      };
+    })
+    .filter(Boolean); // Exclude null values
   // console.log("paths ------------------");
   // console.log(paths);
   return paths;
@@ -42,7 +45,7 @@ export async function getStaticPaths() {
 let { slug } = Astro.params;
 // console.log("Astro.params ------------------");
 // console.log(Astro.params);
-console.log('slug:' + slug);
+console.log("slug:" + slug);
 // dev時：slugの先頭に / がない場合は付ける  (例：about → /about)
 if (slug.charAt(0) !== "/") {
   slug = "/" + slug;
@@ -53,7 +56,7 @@ const myPages: MyPage[] = await getMyPages();
 // myPages の中から url が一致するオブジェクトを取得する
 let pageObj = myPages.find((page: any) => {
   const isMatch = page.url == slug || page.url == slug + "/";
-  // console.log("Checking page:", page.url, "Match:", isMatch);
+  console.log("Checking page:", page.url, "Match:", isMatch);
   return isMatch;
 });
 
@@ -63,13 +66,11 @@ let pageObj = myPages.find((page: any) => {
 let pageId: string = "";
 let contentId: string = "";
 
-if (pageObj !== undefined) {
-  // myPages の中から url が一致するページのidを取得
-  pageId = pageObj.entity_id;
-  contentId = pageObj.id;
-  console.log("pageId= " + pageId);
-  console.log("contentId= " + contentId);
-} else {
+let page: any = {};
+let prevPage: any = {};
+let nextPage: any = {};
+
+if (pageObj === undefined) {
   console.log("pageObj is undefined");
   // myPages の中から url が一致するページがない場合は、404ページを表示
   pageObj = myPages.find((page: any) => page.url === "/404");
@@ -83,48 +84,57 @@ if (pageObj !== undefined) {
   };
 }
 
-let page: any = {};
-let prevPage: any = {};
-let nextPage: any = {};
-
 // 固定ページの場合
-if (pageObj.type === "Page") {
-  // baserCMS5のAPIからページ情報を取得
-  const res = await fetch(
-    `${import.meta.env.API_BASE_URL}/baser-core/pages/${pageId}.json`,
-  );
-  const data: Record<string, any> = (await res.json()) as Record<string, any>;
-  page = data.page;
+else if (pageObj.type === "Page") {
+  console.log("pageObj.type === Page", pageObj.type);
+  // myPages の中から url が一致するページのidを取得
+  if (pageObj.entity_id === undefined) {
+    page = {
+      content: {
+        title: "underfined",
+        eyecatch: null,
+      },
+      contents: "pageObj.entity_id が正しく取得できませんでした",
+    };
+  } else {
+    pageId = pageObj.entity_id;
+    contentId = pageObj.id;
+    console.log("pageId= " + pageId);
+    console.log("contentId= " + contentId);
+    // baserCMS5のAPIからページ情報を取得
+    const res = await fetch(
+      `${import.meta.env.API_BASE_URL}/baser-core/pages/${pageId}.json`,
+    );
+    const data: Record<string, any> = (await res.json()) as Record<string, any>;
+    page = data.page;
 
-  // コンテンツの次、前のページを取得
-  const prev = await fetch(
-    `${
-      import.meta.env.API_BASE_URL
-    }/baser-core/contents/get_prev/${contentId}.json`,
-  );
-  const prevData: Record<string, any> = (await prev.json()) as Record<
-    string,
-    any
-  >;
-  prevPage = prevData.content;
-  // console.log(prevData);
+    // コンテンツの次、前のページを取得
+    const prev = await fetch(
+      `${
+        import.meta.env.API_BASE_URL
+      }/baser-core/contents/get_prev/${contentId}.json`,
+    );
+    const prevData: Record<string, any> = (await prev.json()) as Record<
+      string,
+      any
+    >;
+    prevPage = prevData.content;
 
-  const next = await fetch(
-    `${
-      import.meta.env.API_BASE_URL
-    }/baser-core/contents/get_next/${contentId}.json`,
-  );
+    const next = await fetch(
+      `${
+        import.meta.env.API_BASE_URL
+      }/baser-core/contents/get_next/${contentId}.json`,
+    );
 
-  // `nextData`の再宣言を避ける
-  const nextData: Record<string, any> = (await next.json()) as Record<
-    string,
-    any
-  >;
-  nextPage = nextData.content;
-  // console.log(nextData);
+    // `nextData`の再宣言を避ける
+    const nextData: Record<string, any> = (await next.json()) as Record<
+      string,
+      any
+    >;
+    nextPage = nextData.content;
+  }
 } else if (pageObj.type === "ContentFolder") {
-
-/* ToDo 
+  /* ToDo 
 "type": "ContentFolder", の場合の処理
 例）/service/ サービスのTOPページ
 */
@@ -138,8 +148,7 @@ if (pageObj.type === "Page") {
     contents: "<p>コンテンツフォルダのコンテンツ（準備中）</p>",
   };
 } else if (pageObj.type === "MailContent") {
-
-/*
+  /*
 "type": "MailContent",の場合の処理
 例）お問い合わせページ
 */
@@ -155,7 +164,7 @@ if (pageObj.type === "Page") {
 } else {
   page = {
     content: {
-      title: pageObj.title,
+      title: "underfined",
       eyecatch: null,
     },
     contents: "<p>（準備中）</p>",
