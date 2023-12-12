@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import fetch from "node-fetch";
-import { myPages } from "../js/shared.js";
+import { getMyPages } from "../lib/api";
 
 const { url, id, title, type, plugin, name } = Astro.props;
 
@@ -9,35 +9,30 @@ const { url, id, title, type, plugin, name } = Astro.props;
  * Retrieves the static paths for the pages.
  * @returns {object[]} An array of objects representing the static paths.
  */
+
+interface MyPage {
+  url: string;
+  id: string;
+  title: string;
+  type: string;
+  plugin: string;
+  name: string;
+}
+
 export async function getStaticPaths() {
-  const paths: object = myPages
-    .map(
-      ({
-        url,
-        id,
-        title,
-        type,
-        plugin,
-        name,
-      }: {
-        url: string;
-        id: string;
-        title: string;
-        type: string;
-        plugin: string;
-        name: string;
-      }) => {
-        if (url === "/") {
-          // Skip the loop
-          return;
-        }
-        return {
-          params: { slug: url },
-          props: { id, title, type, plugin, name },
-        };
-      },
-    )
-    .filter(Boolean); // Exclude undefined values
+  const myPages: MyPage[] = await getMyPages();
+  // console.log("myPages ------------------");
+  console.log("myPages.length:", myPages.length);
+  const paths = myPages.map(({ url, id, title, type, plugin, name }) => {
+    if (url === "/") {
+      // Skip the loop
+      return null;
+    }
+    return {
+      params: { slug: url.substring(1) }, // Remove leading '/' for slug
+      props: { id, title, type, plugin, name },
+    };
+  }).filter(Boolean); // Exclude null values
   // console.log("paths ------------------");
   // console.log(paths);
   return paths;
@@ -47,12 +42,14 @@ export async function getStaticPaths() {
 let { slug } = Astro.params;
 // console.log("Astro.params ------------------");
 // console.log(Astro.params);
-// console.log('slug:' + slug);
+console.log('slug:' + slug);
 // dev時：slugの先頭に / がない場合は付ける  (例：about → /about)
 if (slug.charAt(0) !== "/") {
   slug = "/" + slug;
 }
 
+// コンテンツ一覧を取得
+const myPages: MyPage[] = await getMyPages();
 // myPages の中から url が一致するオブジェクトを取得する
 let pageObj = myPages.find((page: any) => {
   const isMatch = page.url == slug || page.url == slug + "/";

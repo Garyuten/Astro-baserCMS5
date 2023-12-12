@@ -2,8 +2,10 @@
 import Layout from "../layouts/Layout.astro";
 // import Card from '../components/Card.astro';
 import fetch from "node-fetch";
+import dotenv from 'dotenv';
+dotenv.config();
 
-import { formatDate } from "../js/shared.js";
+import { formatDate } from "../lib/utils.ts";
 
 // 固定ページ一覧取得
 const res = await fetch(`${import.meta.env.API_BASE_URL}/baser-core/contents.json`);
@@ -24,7 +26,7 @@ const resCategory = await fetch(
   `${import.meta.env.API_BASE_URL}/bc-blog/blog_categories.json?blog_content_id=1`
 );
 const jsonCategory: Record<string, any> = await resCategory.json() as Record<string, any>;
-console.log(jsonCategory);
+// console.log(jsonCategory);
 // idをキーとしたオブジェクトに変換
 let blogCategories: { [key: string]: any } = [];
 jsonCategory.blogCategories.forEach((item: any) => {
