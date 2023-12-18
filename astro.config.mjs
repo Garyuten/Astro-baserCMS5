@@ -2,8 +2,8 @@
 import { defineConfig } from 'astro/config';
 
 // 環境変数からベースURLを取得
-const base = process.env.VITE_ROOT_BASE || '/';
-
+const base = process.env.VITE_ROOT_BASE || "/Astro-baserCMS5/";
+console.log("base: " + base);
 
 // https://astro.build/config
 export default defineConfig({
