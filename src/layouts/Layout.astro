@@ -1,19 +1,14 @@
 ---
 import GlobalNav from "../layouts/GlobalNav.astro";
+import { myContents } from "../lib/api";
 import { capitalize } from "../lib/utils.js";
-
 
 interface Props {
   title: string;
 }
-
 const { title } = Astro.props;
 
-// コンテンツ一覧取得
-const res = await fetch(`${import.meta.env.API_BASE_URL}/baser-core/contents.json`);
-const json = await res.json();
-// console.log(json);
-const contents = json.contents;
+
 
 let home = false;
 let pathname = Astro.url.pathname;
@@ -27,19 +22,30 @@ let { slug } = Astro.params;
 console.log(Astro.url.pathname);
 
 let bodyClass = "Default";
-// contentsの中からslugと一致するものを探す
-for (let i = 0; i < contents.length; i++) {
-  if (contents[i].url === pathname) {
-    // console.log(contents[i]);
+// myContentsの中からslugと一致するものを探す
+for (let i = 0; i < myContents.length; i++) {
+  if (myContents[i].url === pathname) {
+    // console.log(myContents[i]);
     // ブログの場合はbodyClassをBcBlogにする
-    if (contents[i].plugin == "BcBlog" || contents[i].name == "index") {
+    if (myContents[i].plugin == "BcBlog" || myContents[i].name == "index") {
       // 頭1文字目を大文字にする
-      bodyClass = capitalize(contents[i].name);
+      bodyClass = capitalize(myContents[i].name);
       break;
     }
   }
 }
 // console.log("bodyClass:" + bodyClass);
+
+const faviconDict: Record<string, string> = {
+    development: "🚧",
+    staging: "🚨",
+    production: "🥳",
+};
+
+const faviconChar = faviconDict[import.meta.env.MODE];
+const faviconHref = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${faviconChar}</text></svg>`;
+
+
 ---
 
 <!doctype html>
@@ -53,11 +59,7 @@ for (let i = 0; i < contents.length; i++) {
     <title>{title}</title>
     <meta name="description" content="" />
     <meta name="keywords" content="" />
-    <link href="/favicon.ico" type="image/x-icon" rel="icon" /><link
-      href="/favicon.ico"
-      type="image/x-icon"
-      rel="shortcut icon"
-    />
+    <link rel="icon" href={faviconHref} />
 
     <link rel="stylesheet" href="/bc_front/css/style.css" />
     <link

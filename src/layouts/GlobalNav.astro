@@ -1,16 +1,10 @@
 ---
 // コンテンツ一覧取得
-const res = await fetch(
-  `${import.meta.env.API_BASE_URL}/baser-core/contents.json`,
-);
-const json = await res.json();
-// console.log(json);
-const contents = json.contents;
-
+import { myContents } from "../lib/api";
 
 // idをキーとしたオブジェクトに変換
 let menus: { [key: string]: any } = [];
-contents.forEach((item: any) => {
+myContents.forEach((item: any) => {
 //   menus[item.id] = { ...item, children: [] };
     menus[item.id] = {
         id: item.id,
@@ -26,7 +20,7 @@ contents.forEach((item: any) => {
 });
 
 // 親子関係を構築
-contents.forEach((item: any) => {
+myContents.forEach((item: any) => {
   if (item.parent_id !== null && item.parent_id !== 1) {
     menus[item.parent_id].children.push(item);
   }

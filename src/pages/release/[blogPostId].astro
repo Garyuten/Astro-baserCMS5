@@ -10,7 +10,7 @@ import fetch from 'node-fetch';
  * @returns {Array} 各ブログ投稿のパラメータを含むオブジェクトの配列。
  */
 export async function getStaticPaths() {
-	const res = await fetch(`${import.meta.env.API_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=2`);
+	const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=2`);
 	const posts: Record<string, any> = await res.json() as Record<string, any>;
 	
 	const paths = posts.blogPosts.map(
@@ -27,7 +27,7 @@ export async function getStaticPaths() {
 const { blogPostId } = Astro.params; // URLからパラメーター取得
 // const { title, content } = Astro.props;
 
-const resPost: Record<string, any> = await fetch(`${import.meta.env.API_BASE_URL}/bc-blog/blog_posts/${blogPostId}.json`).then(res => res.json() as Record<string, any>);
+const resPost: Record<string, any> = await fetch(`${import.meta.env.VITE_API_BASE_URL}/bc-blog/blog_posts/${blogPostId}.json`).then(res => res.json() as Record<string, any>);
 const post = resPost.blogPost; // JSONの中身を取得
 // console.log(post);
 

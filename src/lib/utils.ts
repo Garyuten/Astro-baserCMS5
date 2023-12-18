@@ -1,5 +1,19 @@
 // ユーティリティ関数
 
+
+export const mode = process.env.NODE_ENV;
+export const isProd = process.env.NODE_ENV === "production";
+export const isDev = process.env.NODE_ENV === "development";
+export const appTitle = import.meta.env.VITE_APP_TITLE;
+export const API_URL = import.meta.env.VITE_API_BASE_URL;
+
+// console.log("mode: ", mode);
+// console.log("isProd: ", isProd);
+// console.log("isDev: ", isDev);
+// console.log("API_URL: ", API_URL);
+// console.log("appTitle: ", appTitle);
+// console.log("HOGE: ", import.meta.env.VITE_HOGE);
+
 /**
  * Capitalizes the first letter of a string and converts the rest of the string to lowercase.
  * 

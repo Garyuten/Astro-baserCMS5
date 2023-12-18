@@ -4,13 +4,13 @@ import Layout from '../../layouts/Layout.astro';
 import fetch from 'node-fetch';
 
 // 固定ページ一覧取得
-// const res = await fetch(`${import.meta.env.API_BASE_URL}/baser-core/contents.json`);
+// const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/baser-core/contents.json`);
 // const json = await res.json();
 // // console.log(json);
 // const contents = json.contents;
 
 // ブログ NEWS 取得
-const resNews = await fetch(`${import.meta.env.API_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=1`);
+const resNews = await fetch(`${import.meta.env.VITE_API_BASE_URL}/bc-blog/blog_posts.json?blog_content_id=1`);
 const jsonNews:any = await resNews.json();
 // console.log(jsonNews);
 const blogPostsNews = jsonNews.blogPosts;
