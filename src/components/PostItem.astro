@@ -1,24 +1,44 @@
 ---
+
+import { formatDate } from "../lib/utils.ts";
+
 interface Props {
-	title: string;
-	body: string;
-	href: string;
+	blogPath: string;
+	blogCategories: any;
+	post: any;
 }
 
-const { href, title, body } = Astro.props;
+const { blogPath, blogCategories, post } = Astro.props;
+
 ---
 
-<li class="link-card">
-	<a href={href}>
-		<h2>
-			{title}
-			<span>&rarr;</span>
-		</h2>
-		<p>
-			{body}
-		</p>
+<li class="bs-top-post__item">
+	<!-- <div class="debug">{JSON.stringify(post)}</div> -->
+	<a href={`${blogPath}/${post.id}`} class="bs-top-post__item-eye-catch">
+	<img
+		src={`/bc_front/${post._eyecatch}`}
+		alt="" width="150" class="img-eye-catch"
+	/>
 	</a>
+	<span class="bs-top-post__item-date">
+	{
+	post.posted ? formatDate(post.posted) : formatDate(post.created)
+	}
+	</span>
+	<a
+	href={`${blogPath}/archives/category/${blogCategories[post.blog_category_id].name}`}
+	class="bs-top-post__item-category"
+	>
+	{blogCategories[post.blog_category_id].title}
+	</a>
+	<a href={`${blogPath}/${post.id}`} class="bs-top-post__item-title">
+	{post.title}
+	</a>
+	<!-- ToDo: HTMLタグを除去して表示する --> 
+	<div class="bs-top-post__item-detail" set:html={post.content} />
 </li>
+
+
 <style>
 	.link-card {
 		list-style: none;

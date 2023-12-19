@@ -56,11 +56,11 @@ if (slug.charAt(0) !== "/") {
 // myContents の中から url が一致するオブジェクトを取得する
 let pageObj = myContents.find((page: any) => {
   const isMatch = page.url == slug || page.url == slug + "/";
-  console.log("Checking page:", page.url, "Match:", isMatch);
+  // console.log("Checking page:", page.url, "Match:", isMatch);
   return isMatch;
 });
 
-// console.log("pageObj ------------------");
+console.log("pageObj ------------------");
 // console.log(pageObj);
 
 let pageId: string = "";
