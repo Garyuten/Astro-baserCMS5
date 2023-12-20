@@ -14,7 +14,7 @@ const { blogPath, blogCategories, post } = Astro.props;
 
 <li class="bs-top-post__item">
 	<!-- <div class="debug">{JSON.stringify(post)}</div> -->
-	<a href={`${blogPath}/${post.id}`} class="bs-top-post__item-eye-catch">
+	<a href={`${import.meta.env.BASE_URL}${blogPath}/${post.id}`} class="bs-top-post__item-eye-catch">
 	<img
 		src={`/bc_front/${post._eyecatch}`}
 		alt="" width="150" class="img-eye-catch"
@@ -26,12 +26,12 @@ const { blogPath, blogCategories, post } = Astro.props;
 	}
 	</span>
 	<a
-	href={`${blogPath}/archives/category/${blogCategories[post.blog_category_id].name}`}
+	href={`${import.meta.env.BASE_URL}${blogPath}/archives/category/${blogCategories[post.blog_category_id].name}`}
 	class="bs-top-post__item-category"
 	>
 	{blogCategories[post.blog_category_id].title}
 	</a>
-	<a href={`${blogPath}/${post.id}`} class="bs-top-post__item-title">
+	<a href={`${import.meta.env.BASE_URL}${blogPath}/${post.id}`} class="bs-top-post__item-title">
 	{post.title}
 	</a>
 	<!-- ToDo: HTMLタグを除去して表示する --> 

@@ -3,6 +3,9 @@ import GlobalNav from "../layouts/GlobalNav.astro";
 import { myContents } from "../lib/api";
 import { capitalize } from "../lib/utils.js";
 
+const basePath = import.meta.env.BASE_URL;
+// console.log("basePath:" + basePath);
+
 interface Props {
   title: string;
 }
@@ -52,37 +55,31 @@ const faviconHref = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg
 <html lang="jp">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width,initial-scale=1.0,minimum-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0"/>
     <title>{title}</title>
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     <link rel="icon" href={faviconHref} />
+    <!-- URLのパスの先頭に、 astro.config.js の base を付けたい -->
+    <link rel="stylesheet" href={`${basePath}/bc_front/css/style.css`} />
+    <link rel="stylesheet" href={`${basePath}/bc_front/css/jquery-ui/jquery-ui-1.11.4.css`} />
+    <link rel="stylesheet" href={`${basePath}/bc_front/css/colorbox/colorbox-1.6.1.css`} />
+    <link rel="stylesheet" href={`${basePath}/bc_front/css/editor.css`} />
 
-    <link rel="stylesheet" href="/bc_front/css/style.css" />
-    <link
-      rel="stylesheet"
-      href="/bc_front/css/jquery-ui/jquery-ui-1.11.4.css"
-    />
-    <link rel="stylesheet" href="/bc_front/css/colorbox/colorbox-1.6.1.css" />
-    <link rel="stylesheet" href="/bc_front/css/editor.css" />
-
-    <script is:inline src="/bc_front/js/vendor/jquery-1.11.3.min.js"></script>
-    <script is:inline src="/bc_front/js/vendor/jquery-ui-1.11.4.min.js"></script>
-    <script is:inline src="/bc_front/js/vendor/jquery.bxslider-4.12.min.js"></script>
-    <script is:inline src="/bc_front/js/vendor/jquery.colorbox-1.6.1.min.js"></script>
-    <script is:inline src="/bc_front/js/vendor/i18n/ui.datepicker-ja.js"></script>
-    <script is:inline src="/bc_front/js/vendor/jquery-accessibleMegaMenu.js"></script>
-    <script is:inline src="/bc_front/js/startup.bundle.js"></script>
+    <script is:inline src={`${basePath}/bc_front/js/vendor/jquery-1.11.3.min.js`}></script>
+    <script is:inline src={`${basePath}/bc_front/js/vendor/jquery-ui-1.11.4.min.js`}></script>
+    <script is:inline src={`${basePath}/bc_front/js/vendor/jquery.bxslider-4.12.min.js`}></script>
+    <script is:inline src={`${basePath}/bc_front/js/vendor/jquery.colorbox-1.6.1.min.js`}></script>
+    <script is:inline src={`${basePath}/bc_front/js/vendor/i18n/ui.datepicker-ja.js`}></script>
+    <script is:inline src={`${basePath}/bc_front/js/vendor/jquery-accessibleMegaMenu.js`}></script>
+    <script is:inline src={`${basePath}/bc_front/js/startup.bundle.js`}></script>
   </head>
   <body id={bodyClass}>
     <div class="bs-container">
       <header class="bs-header">
         <div class="bs-header__inner">
-          <a href="/" title="baserCMS"><img
-              src="/img/logo.png"
+          <a href={`${basePath}/`} title="baserCMS"><img
+              src={`${basePath}/img/logo.png`}
               class="bs-header__logo"
               alt="baserCMS" /></a>
         </div>
@@ -100,9 +97,9 @@ const faviconHref = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg
         home && (
           <ul id="MainImage" class="bs-main-image">
             <li>
-              <a href="/" title="コーポレートサイトにちょうどいい国産CMS">
+              <a href={`${basePath}/`} title="コーポレートサイトにちょうどいい国産CMS">
                 <img
-                  src="/img/main_image_1.jpg"
+                  src={`${basePath}/img/main_image_1.jpg`}
                   alt="コーポレートサイトにちょうどいい国産CMS"
                   width="100%"
                 />
@@ -110,38 +107,38 @@ const faviconHref = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg
             </li>
             <li>
               <a
-                href="/"
+                href={`${basePath}/`}
                 title="全て日本語の国産CMSだから、設置も更新も簡単、わかりやすい。"
               >
                 <img
-                  src="/img/main_image_2.jpg"
+                  src={`${basePath}/img/main_image_2.jpg`}
                   alt="全て日本語の国産CMSだから、設置も更新も簡単、わかりやすい。"
                   width="100%"
                 />
               </a>
             </li>
             <li>
-              <a href="/" title="標準的なWebサイトに必要な基本機能を全て装備">
+              <a href={`${basePath}/`} title="標準的なWebサイトに必要な基本機能を全て装備">
                 <img
-                  src="/img/main_image_3.jpg"
+                  src={`${basePath}/img/main_image_3.jpg`}
                   alt="標準的なWebサイトに必要な基本機能を全て装備"
                   width="100%"
                 />
               </a>
             </li>
             <li>
-              <a href="/" title="デザインも自由自在にカスタマイズ可能！">
+              <a href={`${basePath}/`} title="デザインも自由自在にカスタマイズ可能！">
                 <img
-                  src="/img/main_image_4.jpg"
+                  src={`${basePath}/img/main_image_4.jpg`}
                   alt="デザインも自由自在にカスタマイズ可能！"
                   width="100%"
                 />
               </a>
             </li>
             <li>
-              <a href="/" title="質問・ご相談はユーザーズフォーラムへ">
+              <a href={`${basePath}/`} title="質問・ご相談はユーザーズフォーラムへ">
                 <img
-                  src="/img/main_image_5.jpg"
+                  src={`${basePath}/img/main_image_5.jpg`}
                   alt="質問・ご相談はユーザーズフォーラムへ"
                   width="100%"
                 />
@@ -167,7 +164,7 @@ const faviconHref = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg
                   method="get"
                   accept-charset="utf-8"
                   novalidate="novalidate"
-                  action="/bc-search-index/search_indexes/search"
+                  action={`${basePath}/bc-search-index/search_indexes/search`}
                 >
                   <label for="f">カテゴリ</label><br />
                   <span class=""
@@ -222,17 +219,9 @@ const faviconHref = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg
               href="https://basercms.net/"
               target="_blank"
               class="bs-footer__banner-link"
-              ><img
-                src="/img/baser.power.gif"
-                alt="baserCMS : Based Website Development Project"
-              /></a
-            >&nbsp;
-            <a
-              href="https://cakephp.org/"
-              target="_blank"
-              class="bs-footer__banner-link"
-              ><img
-                src="/img/cake.power.gif"
+              ><img src={`${basePath}/img/baser.power.gif`}  alt="baserCMS : Based Website Development Project"
+              /></a>&nbsp;
+            <a href="https://cakephp.org/" target="_blank" class="bs-footer__banner-link"><img src={`${basePath}/img/cake.power.gif`}
                 alt="CakePHP(tm) : Rapid Development Framework"
               /></a
             >

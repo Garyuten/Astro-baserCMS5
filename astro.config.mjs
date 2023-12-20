@@ -5,7 +5,7 @@ import relativeLinks from "astro-relative-links";
 // 環境変数からベースURLを取得
 console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "production") {
-  var base = "/Astro-baserCMS5/";
+  var base = "/Astro-baserCMS5";
 } else {
   var base = "/";
 }
@@ -15,7 +15,8 @@ console.log("base: " + base);
 export default defineConfig({
   publicDir: "./public",
   outDir: "./docs", // for GitHub Pages
-  base: base,
+  base: base, // for GitHub Pages
+  trailingSlash: 'never', // URLの末尾にスラッシュを付けない
   integrations: [relativeLinks()],
-  site: "https://Garyuten.github.io/", // for GitHub Pages
+  site: "https://Garyuten.github.io", // for GitHub Pages
 });

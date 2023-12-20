@@ -42,7 +42,7 @@ const { slug } = Astro.params;
         // item.level=1のitemのみを出力する
         item.level === 1 && (
             <li class={`bs-global-menu-item li-level-1 nav-item ${item.url === "/"+slug ? 'current' : ''}`}>
-            <a href={item.url} class="bs-global-menu-item--link">{item.title}</a>
+            <a href={import.meta.env.BASE_URL+item.url} class="bs-global-menu-item--link">{item.title}</a>
                 {
                     item.children && item.children.length > 0 && (
                     <div class="bs-global-menu-sub sub-nav" role="group" aria-expanded="false" aria-hidden="true" aria-labelledby={item.id}>
@@ -50,7 +50,7 @@ const { slug } = Astro.params;
                         {
                         item.children.map((item: any) => (
                             <li class={`menu-content li-level-2 ${item.url === "/"+slug ? 'current' : ''}`}>
-                            <a href={item.url}>{item.title}</a>
+                            <a href={import.meta.env.BASE_URL+item.url}>{item.title}</a>
                             </li>
                         ))
                         }
