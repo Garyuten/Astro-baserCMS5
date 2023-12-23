@@ -4,8 +4,8 @@ import { getCrumbs } from "@lib/api";
 
 export class myUtils {
   static mode = process.env.NODE_ENV;
-  static isProd = process.env.NODE_ENV === "production";
-  static isDev = process.env.NODE_ENV === "development";
+  static isProd = process.env.NODE_ENV === "production" ? true : false;
+  static isDev = process.env.NODE_ENV === "development" ? true : false;
   static API_URL = import.meta.env.VITE_API_BASE_URL;
 
   /**
