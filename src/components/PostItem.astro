@@ -24,7 +24,7 @@ const { blogPath, blogCategories, post } = Astro.props;
 	<!-- <div class="debug">{JSON.stringify(post)}</div> -->
 	<a href={`${basePath}${blogPath}/${post.id}`} class="bs-top-post__item-eye-catch">
 	<img
-		src={`/bc_front${post._eyecatch}`}
+		src={`${basePath}/bc_front${post._eyecatch}`}
 		alt="" width="150" class="img-eye-catch"
 	/>
 	</a>
