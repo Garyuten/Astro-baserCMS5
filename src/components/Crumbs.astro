@@ -1,6 +1,7 @@
 ---
 // パンくずリスト
 import { myUtils } from "@lib/utils.ts";
+const basePath = myUtils.basePath;
 
 interface Props {
   contentId: number;
@@ -26,7 +27,7 @@ if (contentId === 0) {
 <div class="bs-crumbs">
   <ul itemscope="" itemtype="https://schema.org/BreadcrumbList">
 	<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
-		<a href="/" itemprop="item"><span itemprop="name">ホーム</span></a>
+		<a href={`${basePath}/`} itemprop="item"><span itemprop="name">ホーム</span></a>
 		<span class="separator">&nbsp;&gt;&nbsp;</span>
 		<meta itemprop="position" content="1" />
 	</li>
@@ -38,7 +39,7 @@ if (contentId === 0) {
 				itemtype="http://schema.org/ListItem"
 			>
 				{index !== myCrumbs.length - 2 ? (
-					<a href={crumb.url} itemprop="item"><span itemprop="name">{crumb.title}</span></a>
+					<a href={basePath+crumb.url} itemprop="item"><span itemprop="name">{crumb.title}</span></a>
 					<span class="separator">&nbsp;&gt;&nbsp;</span>
 				) : (
 					<span itemprop="name">{crumb.title}</span>

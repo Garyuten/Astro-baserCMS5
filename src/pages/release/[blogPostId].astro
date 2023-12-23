@@ -33,7 +33,7 @@ const post = resPost.blogPost; // JSONの中身を取得
 
 ---
 
-<Layout title={post.title} contentId={post.blog_content_id}>
+<Layout title={post.title} contentId={0}>
     <article>
         <h1 set:html={post.title} />
 		<img src={`${post._eyecatch}`} alt="" />

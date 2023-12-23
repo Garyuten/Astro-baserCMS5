@@ -12,7 +12,8 @@ interface Props {
 }   
 const { title, contentId=0 } = Astro.props;
 
-let crumbShow: boolean = contentId > 0 ? true : false;
+console.log("contentId:" + contentId);
+let crumbShow: boolean = contentId >= 1 ? true : false;
 
 let home = false;
 let pathname = Astro.url.pathname;
@@ -36,26 +37,34 @@ let { slug } = Astro.params;
 // console.log(Astro.url.pathname);
 
 let bodyClass = "Default";
+let myContentId = 0;
 // myContentsの中からslugと一致するものを探す
 for (let i = 0; i < myContents.length; i++) {
   if ( myContents[i].url === pathname) {
-    // console.log(myContents[i]);
+    console.log(myContents[i]);
     // ブログの場合はbodyClassをBcBlogにする
     if ( myContents[i].plugin == "BcBlog" || myContents[i].name == "index") {
       // 頭1文字目を大文字にする
       bodyClass = myUtils.capitalize(myContents[i].name);
+      crumbShow = false;
       break;
-    } else if( myContents[i].type === "Page") {
+    } else if( myContents[i].type === "Page" ) {
       bodyClass = myUtils.capitalize(myContents[i].name);
+      crumbShow = true;
+      myContentId = myContents[i].id;
+      break;
+    } else if( myContents[i].type === "ContentFolder" ) {
+      bodyClass = myUtils.capitalize(myContents[i].name);
+      myContentId = myContents[i].id;
       crumbShow = true;
       break;
     }
   }
 }
 
-if(contentId <= 0) {
-  crumbShow = false;
-}
+if(home) {  crumbShow = false;}
+console.log("myContentId:" + myContentId);
+console.log("crumbShow:" + crumbShow);
 
 // console.log("bodyClass:" + bodyClass);
 
@@ -170,7 +179,7 @@ const faviconHref = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg
       {
         // トップページ以外にはパンくずリストを表示
         crumbShow && (
-          <Crumbs contentId={Number(contentId)} />
+          <Crumbs contentId={Number(myContentId)} />
         )
       }
       <div class="bs-wrap">
