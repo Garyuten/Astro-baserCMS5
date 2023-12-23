@@ -1,0 +1,56 @@
+---
+// パンくずリスト
+import { myUtils } from "@lib/utils.ts";
+
+interface Props {
+  contentId: number;
+}
+
+const defaultProps: Props = {
+  contentId: 0,
+};
+
+const { contentId } = Astro.props;
+
+let myCrumbs:any = [];
+
+if (contentId === 0) {
+	myCrumbs = [];
+} else {
+	myCrumbs = await myUtils.myCrumbs(contentId);
+}
+
+---
+
+{ myCrumbs.length > 0 && (
+<div class="bs-crumbs">
+  <ul itemscope="" itemtype="https://schema.org/BreadcrumbList">
+	<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+		<a href="/" itemprop="item"><span itemprop="name">ホーム</span></a>
+		<span class="separator">&nbsp;&gt;&nbsp;</span>
+		<meta itemprop="position" content="1" />
+	</li>
+	{
+		myCrumbs.slice(1).map((crumb: any, index: number) => (
+			<li
+				itemprop="itemListElement"
+				itemscope=""
+				itemtype="http://schema.org/ListItem"
+			>
+				{index !== myCrumbs.length - 2 ? (
+					<a href={crumb.url} itemprop="item"><span itemprop="name">{crumb.title}</span></a>
+					<span class="separator">&nbsp;&gt;&nbsp;</span>
+				) : (
+					<span itemprop="name">{crumb.title}</span>
+				)}
+				<meta itemprop="position" content={(index+2).toString()} />
+			</li>
+		))
+	}
+</ul>
+</div>
+)}
+{ myCrumbs.length === 0 && (
+  <div></div>
+)}
+<style></style>

@@ -1,11 +1,19 @@
 ---
+import { myUtils } from '@lib/utils.ts';
 
-import { formatDate } from "../lib/utils.ts";
+const basePath = myUtils.basePath;
+const formatDate = myUtils.formatDate
 
 interface Props {
 	blogPath: string;
 	blogCategories: any;
 	post: any;
+}
+
+const defaultProps: Props = {
+	blogPath: '',
+	blogCategories: [],
+	post: {},
 }
 
 const { blogPath, blogCategories, post } = Astro.props;
@@ -14,7 +22,7 @@ const { blogPath, blogCategories, post } = Astro.props;
 
 <li class="bs-top-post__item">
 	<!-- <div class="debug">{JSON.stringify(post)}</div> -->
-	<a href={`${import.meta.env.BASE_URL}${blogPath}/${post.id}`} class="bs-top-post__item-eye-catch">
+	<a href={`${basePath}${blogPath}/${post.id}`} class="bs-top-post__item-eye-catch">
 	<img
 		src={`/bc_front/${post._eyecatch}`}
 		alt="" width="150" class="img-eye-catch"
@@ -25,13 +33,15 @@ const { blogPath, blogCategories, post } = Astro.props;
 	post.posted ? formatDate(post.posted) : formatDate(post.created)
 	}
 	</span>
-	<a
-	href={`${import.meta.env.BASE_URL}${blogPath}/archives/category/${blogCategories[post.blog_category_id].name}`}
-	class="bs-top-post__item-category"
-	>
-	{blogCategories[post.blog_category_id].title}
-	</a>
-	<a href={`${import.meta.env.BASE_URL}${blogPath}/${post.id}`} class="bs-top-post__item-title">
+	{post.blog_category_id && blogCategories[post.blog_category_id] &&
+		<a
+		href={`${basePath}${blogPath}/archives/category/${blogCategories[post.blog_category_id].name}`}
+		class="bs-top-post__item-category"
+		>
+		{blogCategories[post.blog_category_id].title}
+		</a>
+	}
+	<a href={`${basePath}${blogPath}/${post.id}`} class="bs-top-post__item-title">
 	{post.title}
 	</a>
 	<!-- ToDo: HTMLタグを除去して表示する --> 

@@ -1,11 +1,16 @@
 ---
-import Layout from "../layouts/Layout.astro";
-// import Card from '../components/Card.astro';
+import Layout from "@layouts/Layout.astro";
+import { myContents } from "@lib/api";
+import { myUtils } from '@lib/utils.ts';
+import PostItem from '@components/PostItem.astro';
+
 import fetch from "node-fetch";
 import dotenv from 'dotenv';
+
 dotenv.config();
 
-import { formatDate } from "../lib/utils.ts";
+const basePath = myUtils.basePath;
+const formatDate = myUtils.formatDate
 
 // 固定ページ一覧取得
 const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/baser-core/contents.json`);
@@ -43,7 +48,7 @@ const blogPostsRelease = jsonRelease.blogPosts;
 
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="Welcome to Astro." contentId={0}>
   <h1>Astro + baserCMS5 🚀</h1>
 
   <div class="bs-info">
@@ -53,31 +58,7 @@ const blogPostsRelease = jsonRelease.blogPosts;
       {
         blogPostsNews &&
           blogPostsNews.map((post: any) => (
-            <li class="bs-top-post__item post-1">
-              <!-- <div class="debug">{JSON.stringify(post)}</div> -->
-              <a href={`/news/${post.id}`} class="bs-top-post__item-eye-catch">
-                <img
-                  src={`/bc_front/${post._eyecatch}`}
-                  alt="" width="150" class="img-eye-catch"
-                />
-              </a>
-              <span class="bs-top-post__item-date">
-              {
-                post.posted ? formatDate(post.posted) : formatDate(post.created)
-              }
-                </span>
-              <a
-                href={`/news/archives/category/${blogCategories[post.blog_category_id].name}`}
-                class="bs-top-post__item-category"
-              >
-                {blogCategories[post.blog_category_id].title}
-              </a>
-              <a href={`/news/${post.id}`} class="bs-top-post__item-title">
-                {post.title}
-              </a>
-             <!-- ToDo: HTMLタグを除去して表示する --> 
-              <div class="bs-top-post__item-detail" set:html={post.content} />
-            </li>
+            <PostItem blogPath="/news" blogCategories={blogCategories} post={post} />
           ))
       }
     </ul>
@@ -86,13 +67,8 @@ const blogPostsRelease = jsonRelease.blogPosts;
 
   {
     blogPostsRelease &&
-      blogPostsRelease.map((content: any) => (
-        <a href={`/post${content.id}`}>
-          {content.id}
-          {content.url}
-          <h2 set:html={content.title} />
-          <p set:html={content.name} />
-        </a>
+      blogPostsRelease.map((post: any) => (
+          <PostItem blogPath="/release" blogCategories={blogCategories} post={post} />
       ))
   }
 

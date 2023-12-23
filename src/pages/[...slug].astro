@@ -1,8 +1,8 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import Layout from "@layouts/Layout.astro";
 import fetch from "node-fetch";
-import { myContents } from "../lib/api";
-
+import { myContents } from "@lib/api";
+import { myUtils } from '@lib/utils';
 
 const { url, id, title, type, plugin, name } = Astro.props;
 
@@ -13,7 +13,7 @@ const { url, id, title, type, plugin, name } = Astro.props;
 
 interface MyPage {
   url: string;
-  id: string;
+  id: number;
   entity_id?: string;
   title: string;
   type: string;
@@ -64,7 +64,7 @@ console.log("pageObj ------------------");
 // console.log(pageObj);
 
 let pageId: string = "";
-let contentId: string = "";
+let contentId: number = 0;
 
 let page: any = {};
 let prevPage: any = {};
@@ -98,7 +98,7 @@ else if (pageObj.type === "Page") {
     };
   } else {
     pageId = pageObj.entity_id;
-    contentId = pageObj.id;
+    contentId = parseInt(pageObj.id);
     console.log("pageId= " + pageId);
     console.log("contentId= " + contentId);
     // baserCMS5のAPIからページ情報を取得
@@ -173,7 +173,7 @@ else if (pageObj.type === "Page") {
 
 {
   page.content && (
-    <Layout title={page.content.title}>
+    <Layout title={page.content.title} contentId={contentId}>
       <article>
         <h1 set:html={page.content.title} />
         {page.content.eyecatch && (

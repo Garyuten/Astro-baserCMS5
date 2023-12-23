@@ -15,8 +15,8 @@ console.log("base: " + base);
 export default defineConfig({
   publicDir: "./public",
   outDir: "./docs", // for GitHub Pages
+  trailingSlash: "ignore",
   base: base, // for GitHub Pages
-  trailingSlash: 'never', // URLの末尾にスラッシュを付けない
   integrations: [relativeLinks()],
   site: "https://Garyuten.github.io", // for GitHub Pages
 });

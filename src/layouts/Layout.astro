@@ -1,17 +1,18 @@
 ---
-import GlobalNav from "../layouts/GlobalNav.astro";
-import { myContents } from "../lib/api";
-import { capitalize } from "../lib/utils.js";
+import GlobalNav from "@layouts/GlobalNav.astro";
+import { myContents } from "@lib/api";
+import { myUtils } from '@lib/utils.ts';
+import Crumbs from '@components/Crumbs.astro';
 
-const basePath = import.meta.env.BASE_URL;
-// console.log("basePath:" + basePath);
+const basePath = myUtils.basePath;
 
 interface Props {
   title: string;
-}
-const { title } = Astro.props;
+  contentId: number;
+}   
+const { title, contentId=0 } = Astro.props;
 
-
+let crumbShow: boolean = contentId > 0 ? true : false;
 
 let home = false;
 let pathname = Astro.url.pathname;
@@ -27,16 +28,25 @@ console.log(Astro.url.pathname);
 let bodyClass = "Default";
 // myContentsの中からslugと一致するものを探す
 for (let i = 0; i < myContents.length; i++) {
-  if (myContents[i].url === pathname) {
+  if ( myContents[i].url === pathname) {
     // console.log(myContents[i]);
     // ブログの場合はbodyClassをBcBlogにする
-    if (myContents[i].plugin == "BcBlog" || myContents[i].name == "index") {
+    if ( myContents[i].plugin == "BcBlog" || myContents[i].name == "index") {
       // 頭1文字目を大文字にする
-      bodyClass = capitalize(myContents[i].name);
+      bodyClass = myUtils.capitalize(myContents[i].name);
+      break;
+    } else if( myContents[i].type === "Page") {
+      bodyClass = myUtils.capitalize(myContents[i].name);
+      crumbShow = true;
       break;
     }
   }
 }
+
+if(contentId <= 0) {
+  crumbShow = false;
+}
+
 // console.log("bodyClass:" + bodyClass);
 
 const faviconDict: Record<string, string> = {
@@ -145,6 +155,12 @@ const faviconHref = `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg
               </a>
             </li>
           </ul>
+        )
+      }
+      {
+        // トップページ以外にはパンくずリストを表示
+        crumbShow && (
+          <Crumbs contentId={Number(contentId)} />
         )
       }
       <div class="bs-wrap">
